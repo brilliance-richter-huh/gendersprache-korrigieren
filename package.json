@@ -1,0 +1,29 @@
+{
+  "name": "gendersprache-korrigieren",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "cross-env TS_NODE_FILES=true mocha --exit --require ts-node/register --colors test/**/*.ts",
+    "coverage": "nyc --reporter=lcov --reporter=text-summary ./node_modules/.bin/npm test",
+    "bundle": "./node_modules/.bin/parcel ./src/gendersprachekorrigieren.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/chai": "~4.2.11",
+    "@types/jest": "~25.1.4",
+    "chai": "~4.2.0",
+    "cross-env": "~7.0.2",
+    "mocha": "~7.1.1",
+    "npm": "^6.14.4",
+    "nyc": "~15.0.1",
+    "parcel-bundler": "1.12.4",
+    "parcel-plugin-asset-copier": "1.0.0",
+    "ts-node": "^8.8.2",
+    "typescript": "3.5.3",
+    "@types/node": "13.9.8"
+  },
+  "the-following-property-is-for-package": "parcel-plugin-asset-copier",
+  "assetsPath": "assets"
+}

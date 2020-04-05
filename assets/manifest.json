@@ -1,0 +1,34 @@
+{
+   "background": {
+      "scripts": [ "background.js" ]
+   },
+   "browser_action": {
+      "default_icon": {
+         "32": "images/iconOn.png"
+      },
+      "default_title": "Filterung aktiv",
+	  "browser_style": true
+   },
+   "content_scripts": [ {
+      "js": [ "gendersprachekorrigieren.js" ],
+      "matches": [ "http://*/*", "https://*/*" ]
+   } ],
+   "description": "Entfernt die gängigsten Sorten von Binnen-Is, Sternen, Unterstrichen etc. auf besuchten deutschsprachigen Webseiten.",
+   "icons": {
+      "128": "images/icon128.png",
+      "48": "images/icon48.png"
+   },
+   "manifest_version": 2,
+   "name": "Gendersprache korrigieren",
+   "options_ui": {
+      "page": "options.html",
+      "browser_style": true
+   },
+   "permissions": [ "storage" ],
+   "version": "2.6",
+   "applications": {
+      "gecko": {
+          "id": "{deadbeef-daed-feeb-daed-feebdeadbeef}"
+      }
+  }
+}

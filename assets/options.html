@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<style media="screen" type="text/css">
+		* {
+			font-family: Segoe UI, sans-serif;
+		}
+
+		h3 {
+			font-weight: bold;
+		}
+
+		p {
+			line-height: 130%;
+		}
+
+		.controls {
+			line-height: 80%;
+		}
+
+		label {
+			margin-left: 5px;
+		}
+
+		textarea {
+			width: 100%;
+		}
+	</style>
+</head>
+
+<body>
+	<form>
+		<fieldset>
+			<legend>Einstellungen</legend>
+			<h3>Filtereinstellungen</h3>
+			<div class="controls">
+				<div class="input"><input type="checkbox" id="aktiv" checked><label id="aktiv-description">Filterung
+						aktiv</label></div><br>
+				<div class="input"><input type="checkbox" id="doppelformen"><label>Doppelformen ersetzen (z.B. "Schüler
+						und Schülerinnen")</label></div><br>
+				<div class="input"><input type="checkbox" id="partizip"><label>Partizip- und Passivkonstruktionen
+						ersetzen (z.B. "Studierende") (beta)</label></div>
+			</div>
+			<h3>Anzeige</h3>
+			<div class="controls">
+				<div class="input"><input type="checkbox" id="counter"><label>Zahl der gefilterten Elemente im
+						Toolbar-Icon anzeigen</label></div><br>
+				<div class="input"><input type="checkbox" id="invertiert"><label>Toolbar-Icon für dunkle Themes</label>
+				</div>
+			</div>
+			<h3>Filtermodus</h3>
+			<div class="controls">
+				<p>Auswahl, auf welchen Seiten gefiltert werden soll:</p>
+				<div class="input"><input type="radio" name="filterstate" id="none" value="Keine"><label>Überall
+						filtern</label></div><br>
+				<div class="input"><input type="radio" name="filterstate" id="blackliststate"
+						value="Blacklist"><label>Nicht auf Blacklist-Seiten filtern</label></div><br>
+				<div class="input"><input type="radio" name="filterstate" id="whiteliststate"
+						value="Whitelist"><label>Nur auf Whitelist-Seiten filtern</label></div><br>
+				<div class="input"><input type="radio" name="filterstate" id="ondemandstate"
+						value="Bei Bedarf"><label>Nur bei Bedarf filtern (per Klick auf das Toolbar-Icon)</label></div>
+				<br><br>
+				<div class="input" id="skipvis"><input type="checkbox" id="skip_topic"><label>Filterung auf Seiten zum
+						Thema "Binnen-I" aussetzen</label></div>
+			</div>
+			<h3>Blacklist</h3>
+			<p>Domains, auf denen die Erweiterung nicht aktiv sein soll (Eine Adresse pro Zeile):</p>
+			<textarea id="blacklist" placeholder="z.B.: github.com" rows="5"></textarea><br>
+			<h3>Whitelist</h3>
+			<p>Domains, auf denen die Erweiterung ausschließlich aktiv sein soll (Eine Adresse pro Zeile):</p>
+			<textarea id="whitelist" placeholder="z.B.: .gv.at" rows="5"></textarea>
+		</fieldset>
+	</form>
+	<script src="options.js"></script>
+</body>
+
+</html>

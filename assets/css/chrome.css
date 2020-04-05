@@ -1,0 +1,12 @@
+fieldset { 
+	border: 0px;
+}
+legend { 
+	display: none; 
+}
+.input {
+	display: flex;
+	align-items: center;
+	width: 390px;
+	margin: auto;
+}
