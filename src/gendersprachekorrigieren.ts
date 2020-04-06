@@ -420,11 +420,10 @@ export class BeGone {
 
     private entferneDoppelformen(s: string): string {
         this.log("20000");
-        let replacementsd = 0;
         if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*&_\(][a-zA-ZäöüßÄÖÜ]/.test(s)) {
             this.log("21000");
             s = s.replace(/\b((von |für |mit )?((d|jed|ein|ihr|zum|sein)(e[rn]?|ie) )?([a-zäöüß]{4,20} )?)([a-zäöüß]{2,})innen( und | oder | & | bzw\.? |[\/\*_\(-])\2?((d|jed|ein|ihr|zum|sein)(e[rmns]?|ie) )?\6?(\7(e?n?))\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
-                replacementsd++;
+                this.replacementsd++;
                 if (p1) {
                     this.log("21001");
                     return p1 + p12;
@@ -434,7 +433,7 @@ export class BeGone {
                 }
             }); //Bürgerinnen und Bürger
             s = s.replace(/\b(von |für |mit |als )?(((zu )?d|jed|ein|ihr|zur|sein)(e|er|ie) )?(([a-zäöüß]{4,20}[enr]) )?([a-zäöüß]{2,})(en?|in)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?)))\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) => {
-                replacementsd++;
+                this.replacementsd++;
                 if (p1) {
                     if (p6 && !p17) {
                         this.log("21003");
@@ -452,7 +451,7 @@ export class BeGone {
                 }
             }); //die Bürgerin und der Bürger
             s = s.replace(/\b(von |für |mit |als )?(((zu )?d|jed|ein|ihr|sein)(e|er|ie) |zur )?(([a-zäöüß]{4,20}[enr]) )?([a-zäöüß]{4,20})?(ärztin|anwältin|bäue?rin|rätin|fränkin|schwäbin|schwägerin)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?))(arzt|anwalt|bauer|rat|frank|schwab|schwager)(e(n|s)?)?)\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
-                replacementsd++;
+                this.replacementsd++;
                 if (p1) {
                     this.log("21007");
                     return p1 + p12;
@@ -462,7 +461,7 @@ export class BeGone {
                 }
             }); //unregelmäßiger Singular: die Ärztin und der Arzt
             s = s.replace(/\b((von |für |mit |als )?(((zu )?d|jed|ein|ihr|zur|sein)(e|er|ie) )?((zur|[a-zäöüß]{4,20}[enr]) ))?([a-zäöüß]{4,20})?((bäue?r|jüd|fränk|schwäb)innen)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?))(bauer|jude|franke|schwabe)([ns])?)\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
-                replacementsd++;
+                this.replacementsd++;
                 if (p1) {
                     this.log("21009");
                     return p1 + p14;
@@ -473,22 +472,22 @@ export class BeGone {
             }); //unregelmäßiger Plural: Bäuerinnen und Bauern
             s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{2,})(e?(n|s|r)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(in(nen)?|en?)\b/ig, (match, p1) => {
                 this.log("21011");
-                replacementsd++;
+                this.replacementsd++;
                 return p1;
             }); //Bürger und Bürgerinnen, Bürger und Bürgerin
             s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|sein)(e[rnms]?|ie) |zum )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{4,20})?(arzt|anwalt|bauer|rat|frank|schwab|schwager)(e?(s)?))( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|sein)(e[rn]?|ie) |zur )?\6?\7(ärzt|anwält|bäue?rin|rät|fränk|schwäb|schwäger)(in(nen)?)\b/ig, (match, p1) => {
                 this.log("21012");
-                replacementsd++;
+                this.replacementsd++;
                 return p1;
             }); //unregelmäßiger Singular: der Arzt und die Ärztin
             s = s.replace(/\b((von |für |mit |als )?((d|jed|ein|ihr|zum|sein)(e[rnms]?|ie) )?([a-zäöüß]{4,20}[enr] )?([a-zäöüß]{4,20})?(bauer|jud|frank|schwab)(e?n)?)( und | oder | & | bzw\.? |[\/\*_\(-])(\2|von der )?(((von |zu )?d|jed|ein|ihr|zur|sein)(e[rn]?|ie) )?\6?\7(bäue?r|jüd|fränk|schwäb)(in(nen)?)\b/ig, (match, p1) => {
                 this.log("21013");
-                replacementsd++;
+                this.replacementsd++;
                 return p1;
             });//unregelmäßiger Plural: Bauern und Bäuerinnen
             s = s.replace(/\b([A-Z][a-zäöüß]{2,})([a-zäöüß]{2,})innen( und | oder | & | bzw\.? )-(\2(e*n)*)\b/g, (match, p1, p2, p3, p4) => {
                 this.log("21014");
-                replacementsd++;
+                this.replacementsd++;
                 return p1 + p4;
             }); //Bürgervertreterinnen und -vertreter
         }
@@ -496,34 +495,33 @@ export class BeGone {
     }
 
     private entfernePartizip(s: string): string {
-        let replacementsp = 0;
         if (/(ier|arbeit|orsch|fahr)ende/.test(s)) {
             s = s.replace(/der Studierende\b/g, () => {
-                replacementsp++;
+                this.replacementsp++;
                 return "der Student";
             });
             s = s.replace(/Studierende(r|n?)?/g, () => {
-                replacementsp++;
+                this.replacementsp++;
                 return "Studenten";
             });
             s = s.replace(/Dozierende(r|n?)?/g, () => {
-                replacementsp++;
+                this.replacementsp++;
                 return "Dozenten";
             });
             s = s.replace(/Assistierende(r|n?)?/g, () => {
-                replacementsp++;
+                this.replacementsp++;
                 return "Assistenten";
             });
             s = s.replace(/Mitarbeitende(r|n?)?/g, () => {
-                replacementsp++;
+                this.replacementsp++;
                 return "Mitarbeiter";
             });
             s = s.replace(/Forschende(r|n?)?/g, () => {
-                replacementsp++;
+                this.replacementsp++;
                 return "Forscher";
             });
             s = s.replace(/([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
-                replacementsp++;
+                this.replacementsp++;
                 return p1 + "fahrer";
             });
         }
@@ -587,9 +585,9 @@ export class BeGone {
             if (probeResult.probeBinnenI) {
                 this.applyToNodes(this.nodes, this.entferneBinnenIs);
             }
-            // if (counter) {
-            //     sendCounttoBackgroundScript();
-            // }
+            if (this.settings.counter) {
+                this.sendCounttoBackgroundScript();
+            }
         }
     }
 
@@ -606,9 +604,9 @@ export class BeGone {
             if (probeResult.probeBinnenI) {
                 s = this.entferneBinnenIs(s);
             }
-            // if (counter) {
-            //     sendCounttoBackgroundScript();
-            // }
+            if (this.settings.counter) {
+                this.sendCounttoBackgroundScript();
+            }
         }
         return s;
     }    
@@ -622,9 +620,9 @@ export class BeGone {
                     this.applyToNodes(nodes, this.entfernePartizip);
                 }
                 this.applyToNodes(nodes, this.entferneBinnenIs);
-                // if (counter) {
-                //     sendCounttoBackgroundScript();
-                // }
+                if (this.settings.counter) {
+                    this.sendCounttoBackgroundScript();
+                }
         }
     }
 
