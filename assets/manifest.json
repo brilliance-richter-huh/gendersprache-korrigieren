@@ -25,7 +25,7 @@
       "browser_style": true
    },
    "permissions": [ "storage" ],
-   "version": "2.6.1",
+   "version": "2.7.0",
    "applications": {
       "gecko": {
           "id": "{deadbeef-daed-feeb-daed-feebdeadbeef}"
