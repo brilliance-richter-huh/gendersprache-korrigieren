@@ -1,7 +1,7 @@
 declare var chrome: any;
 interface BeGoneSettings {
     aktiv?: boolean;
-    redundancy?: boolean;
+    doppelformen?: boolean;
     skip_topic?: boolean;
     partizip?: boolean;
     whitelist?: string;
@@ -33,12 +33,12 @@ export class BeGone {
     private replacementsb = 0;
     private replacementsd = 0;
     private replacementsp = 0;
-    private settings: BeGoneSettings = { aktiv: true, partizip: true, redundancy: true, skip_topic: false };
+    private settings: BeGoneSettings = { aktiv: true, partizip: true, doppelformen: true, skip_topic: false };
     private nodes: Array<CharacterData> = new Array<CharacterData>();
     private mtype: string | undefined = undefined;
 
     private log(s: string) {
-//        console.log(s);
+        //console.log(s);
     }
 
     private textNodesUnder(el: Node): Array<CharacterData> {
@@ -68,7 +68,24 @@ export class BeGone {
                   
                 },
                 false);
-        while (n = walk.nextNode()) a.push(n as CharacterData);
+        while (n = walk.nextNode() as CharacterData) {
+            let nodeParent = n.parentNode;
+            if (!nodeParent) {
+                a.push(n);
+            } else
+            if (!this.isHTMLFormattingNodeName(nodeParent.nodeName)){
+                a.push(n);
+            } else {
+                // we've got a text node that will probably need context to be analyzed (like an word highlighted with a <mark> tag) - save the context nodes as well
+                if (nodeParent.previousSibling && nodeParent.previousSibling.nodeType === 3) {
+                    a.push(nodeParent.previousSibling as CharacterData);
+                }
+                a.push(n);
+                if (nodeParent.nextSibling && nodeParent.nextSibling.nodeType === 3) {
+                    a.push(nodeParent.nextSibling as CharacterData);
+                }
+            }
+        }
         return a;
     }
 
@@ -319,7 +336,8 @@ export class BeGone {
                         return "asen";
                     });
                 }
-                s = s.replace(/\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen) ([ID]?[a-zäöüß]+en |[0-9.,]+ )?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b/g, (match, p1) => {
+                // statt Leerzeichen kommt [\s]{1,2} zum Einsatz -> Leerzeichen oder Leerzeichen + Markerzeichen für die Kontexterkennung (hacky, aber so what)
+                s = s.replace(/\b(([Dd]en|[Aa]us|[Aa]ußer|[Bb]ei|[Dd]ank|[Gg]egenüber|[Ll]aut|[Mm]it(samt)?|[Nn]ach|[Ss]amt|[Vv]on|[Uu]nter|[Zz]u|[Ww]egen|[MmSsDd]?einen)(?: ein| zwei| drei| [0-9]+)?[\s]{1,2}([ID]?[a-zäöüß]+en[\s]{1,2}|[0-9.,]+[\s]{1,2})?[A-ZÄÖÜ][a-zäöüß]+)erInnen\b/g, (match, p1) => {
                     this.log("12206");
                     this.replacementsb++;
                     return p1 + "ern";
@@ -422,14 +440,16 @@ export class BeGone {
         this.log("20000");
         if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*&_\(][a-zA-ZäöüßÄÖÜ]/.test(s)) {
             this.log("21000");
-            s = s.replace(/\b((von |für |mit )?((d|jed|ein|ihr|zum|sein)(e[rn]?|ie) )?([a-zäöüß]{4,20} )?)([a-zäöüß]{2,})innen( und | oder | & | bzw\.? |[\/\*_\(-])\2?((d|jed|ein|ihr|zum|sein)(e[rmns]?|ie) )?\6?(\7(e?n?))\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12) => {
-                this.replacementsd++;
+            // Hinweis: \b am Anfang ersetzt durch (?=\b|[ÄäÖöÜö]), weil \b die Umlaute nicht matcht, bspw. "Ärztinnen und Ärzte" _am Anfang eines Satzes_ würden nicht ersetzt (in der Mitte aber kein Problem)
+            s = s.replace(/(?=\b|[ÄäÖöÜö])((von[\s]{1,2}|für[\s]{1,2}|mit[\s]{1,2})?((d|jed|ein|ihr|zum|sein)(e[rn]?|ie)[\s]{1,2})?([a-zäöüß]{4,20} )?)([a-zäöüß]{2,})innen( und | oder | & | bzw\.? |[\/\*_\(-])\2?((d|jed|ein|ihr|zum|sein)(e[rmns]?|ie)[\s]{1,2})?\6?(\7(e?n?))\b([\f]?)/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
+                    this.replacementsd++;
+                // Hinweis: p14 ist das /f-Zeichen, das u.U. verwendet wird, die zu ersetzende Wortgruppe zu umschließen
                 if (p1) {
                     this.log("21001");
-                    return p1 + p12;
+                    return p1 + p12 + (p14 ? p14 : "");
                 } else {
                     this.log("21002");
-                    return p12;
+                    return p12 + (p14 ? p14 : "");
                 }
             }); //Bürgerinnen und Bürger
             s = s.replace(/\b(von |für |mit |als )?(((zu )?d|jed|ein|ihr|zur|sein)(e|er|ie) )?(([a-zäöüß]{4,20}[enr]) )?([a-zäöüß]{2,})(en?|in)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?)))\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) => {
@@ -542,7 +562,7 @@ export class BeGone {
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I/.test(bodyTextContent)) {
             probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.| und -)?In|(\/-?|_|\*|:|\.| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
 
-            if (this.settings.redundancy) {
+            if (this.settings.doppelformen) {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
             }
             if (this.settings.partizip) {
@@ -557,16 +577,61 @@ export class BeGone {
         }
     }
 
+    private isHTMLFormattingNodeName(nodeName?: string): boolean {
+        if (!nodeName) {
+            return false;
+        }
+
+        nodeName = nodeName.toLowerCase();
+
+        return nodeName === "mark" 
+        || nodeName === "b" 
+        || nodeName === "strong" 
+        || nodeName === "i"
+        || nodeName === "em"
+        || nodeName === "small"
+        || nodeName === "del"
+        || nodeName === "ins"
+        || nodeName === "sub"
+        || nodeName === "sup"
+        || nodeName === "a";
+    }
+
+    private replaceLineBreak(s: string) {
+        return s.replace(/(\n|\r|\r\n)/ig, " ");
+    }
+
     private applyToNodes(nodes: Array<CharacterData>, modifyData: (s: string) => string) {
         var textnodes = nodes;
         for (var i = 0; i < textnodes.length; i++) {
             var node = textnodes[i];
-            var s = node.data;
+            var oldText = node.data;
+            var newText = oldText;
 
-            s = modifyData.call(this, s);
+            var parentNodeName = node.parentNode ? node.parentNode.nodeName.toLowerCase() : "";
+            // special treatment of HTML nodes that are only there for formatting; those might tear a word out of it's context which is important for correcting
+            if (this.isHTMLFormattingNodeName(parentNodeName)) {
+                // this word needs to be replaced in context
+                var oldTextInContext = (i > 0 ? textnodes[i-1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i+1].data : "");
+                oldTextInContext = this.replaceLineBreak(oldTextInContext);
+                oldTextInContext = modifyData.call(this, oldTextInContext);
+                var index1 = oldTextInContext.indexOf("\f");
+                var index2 = oldTextInContext.indexOf("\f", index1 + 1);
+                var index3 = oldTextInContext.indexOf("\f", index2 + 1);
+                if (index1 > -1 && index2 > -2 && index3 === -1) // sanity check - RegEx magic might remove our marker; fall back to old behavior in this case
+                {
+                    newText = oldTextInContext.substring(index1 + 1, index2);
+                } else {
+                    oldText = this.replaceLineBreak(oldText);
+                    newText = modifyData.call(this, oldText);
+                }
+            } else {
+                oldText = this.replaceLineBreak(oldText);
+                newText = modifyData.call(this, oldText);
+            }
 
-            if (node.data !== s) {
-                node.data = s;
+            if (node.data !== newText) {
+                node.data = newText;
             }
         }
     }
@@ -574,9 +639,9 @@ export class BeGone {
     public entferneInitial() {
         const probeResult = this.probeDocument()
 
-        if (probeResult.probeBinnenI || this.settings.redundancy && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip) {
+        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip) {
             this.nodes = this.textNodesUnder(document)
-            if (this.settings.redundancy && probeResult.probeRedundancy) {
+            if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 this.applyToNodes(this.nodes, this.entferneDoppelformen);
             }
             if (this.settings.partizip && probeResult.probePartizip) {
@@ -594,8 +659,8 @@ export class BeGone {
     public entferneInitialForTesting(s: string): string {
         const probeResult = this.probeDocument(s)
 
-        if (probeResult.probeBinnenI || this.settings.redundancy && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip) {
-            if (this.settings.redundancy && probeResult.probeRedundancy) {
+        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip) {
+            if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 s = this.entferneDoppelformen(s);
             }
             if (this.settings.partizip && probeResult.probePartizip) {
@@ -613,7 +678,7 @@ export class BeGone {
 
     private entferneInserted(nodes: Array<CharacterData>) {
         if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I/.test(document.body.textContent ? document.body.textContent : "")) {
-                if (this.settings.redundancy) {
+                if (this.settings.doppelformen) {
                     this.applyToNodes(nodes, this.entferneDoppelformen);
                 }
                 if (this.settings.partizip) {

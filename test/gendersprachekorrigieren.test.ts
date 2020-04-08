@@ -158,11 +158,20 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("deren Musiker:innen sangen");
         expect(result).to.be.equal("deren Musiker sangen");
     });
-    
-});
 
-describe('entferne Doppelformen', () => {
-    let beGone = new BeGone();
+    it('MusikerInnen -> Musikern', () => {
+        const result = beGone.entferneInitialForTesting("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den MusikerInnen wie den VeranstalterInnen, eher mit EinzelkämpferInnen zu tun.");
+        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den Musikern wie den Veranstaltern, eher mit Einzelkämpfern zu tun.");
+    });
+
+    it('MusikerInnen -> Musikern', () => {
+        const result = beGone.entferneInitialForTesting("Kaum ausgezogen, hat sie die Straßen mit Bildern von zwei MusikerInnen dekoriert.");
+        expect(result).to.be.equal("Kaum ausgezogen, hat sie die Straßen mit Bildern von zwei Musikern dekoriert.");
+    });
+ });
+
+ describe('entferne Doppelformen', () => {
+     let beGone = new BeGone();
     it('Lehrer und Lehrerinnen -> Lehrer', () => {
         const result = beGone.entferneInitialForTesting("Lehrer und Lehrerinnen");
         expect(result).to.be.equal("Lehrer");
@@ -213,4 +222,51 @@ describe('entferne Doppelformen', () => {
         expect(result).to.be.equal("Könige");
     });
 
+    it('Musikerinnen und Musiker -> Musiker', () => {
+        const result = beGone.entferneInitialForTesting("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für Musikerinnen und Musiker verschiedener Länder und Kulturen.");
+        expect(result).to.be.equal("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für Musiker verschiedener Länder und Kulturen.");
+    });
+
+    it('Heldinnen und Helden -> Helden', () => {
+        const result = beGone.entferneInitialForTesting("Fast jeder von uns kennt die wahren Heldinnen und Helden der Krise.");
+        expect(result).to.be.equal("Fast jeder von uns kennt die wahren Helden der Krise.");
+    });
+
+    it('Verkäuferinnen und Verkäufern -> Verkäufern', () => {
+        const result = beGone.entferneInitialForTesting("den Verkäuferinnen und Verkäufern im Supermarkt, die hinter");
+        expect(result).to.be.equal("den Verkäufern im Supermarkt, die hinter");
+    });
+
+    // it('die Bürgerin und der Bürger -> der Bürger', () => {
+    //     const result = beGone.entferneInitialForTesting("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, der Bürgerin und dem Bürger, der hinter");
+    //     expect(result).to.be.equal("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, dem Bürger, der hinter");
+    // });
+
+    it('Ärztinnen und Ärzte -> Ärzte', () => {
+        const result = beGone.entferneInitialForTesting("Ärztinnen und Ärzte genießen in der Regel ein hohes Ansehen.");
+        expect(result).to.be.equal("Ärzte genießen in der Regel ein hohes Ansehen.");
+    });
+
+    it('Den Ärztinnen und Ärzte -> Den Ärzten', () => {
+        const result = beGone.entferneInitialForTesting("Den Ärztinnen und Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
+        expect(result).to.be.equal("Den Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
+    });
+});
+
+describe('behandelt viele Whitespaces', () => {
+    let beGone = new BeGone();
+    it('Musikerinnen und Musiker -> Musiker', () => {
+        const result = beGone.entferneInitialForTesting("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für \fMusikerinnen und Musiker\f verschiedener Länder und Kulturen.");
+        expect(result).to.be.equal("Dazwischen kulturelle Projekte wie die ABC“, ebenfalls in Bremen, ein Treffpunkt für \fMusiker\f verschiedener Länder und Kulturen.");
+    });
+
+    it('MusikerInnen -> Musikern', () => {
+        const result = beGone.entferneInitialForTesting("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikerInnen\fwie den VeranstalterInnen, eher mit EinzelkämpferInnen zu tun.");
+        expect(result).to.be.equal("Auch wenn man sich schätzt und freundlich grüßt: Prinzipiell hat man es in der freien Bremer Szene, bei den\fMusikern\fwie den Veranstaltern, eher mit Einzelkämpfern zu tun.");
+    });
+
+    it('Verkäuferinnen und Verkäufern -> Verkäufern', () => {
+        const result = beGone.entferneInitialForTesting("Den Polizisten, die auf den Straßen für Sicherheit sorgen, den \fVerkäuferinnen und Verkäufern im Supermarkt\f, die hinter");
+        expect(result).to.be.equal("Den Polizisten, die auf den Straßen für Sicherheit sorgen, den \fVerkäufern im Supermarkt\f, die hinter");
+    });
 });

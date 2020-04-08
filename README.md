@@ -15,9 +15,17 @@ Beispiele für die Korrektur (vorher -> nachher):
 
 Mehr Beispiele finden sich im Verzeichnis `/test`, in dem sich einige Unit-Tests für Korrekturen befinden.
 
-## Warum reicht Binnen-I be gone nicht aus?
+## Warum reicht das Add-on *Binnen-I be gone* nicht aus?
 
 Momentan reicht es wahrschenlich aus. Perspektivisch lässt sich das Add-on auf GitHub besser weiterentwickeln.
+
+## Bisher erfolgte Anpassungen im Vergleich zu *Binnen-i be gone*
+
+* Fix: Doppelformen, die durch einen Zeilenumbruch unterbrochen werden, wurden nicht ersetzt
+* Fix: bessere Behandlung einzelner Wortgruppen, die Teil von Hyperlinks (`a`-Tag) sind oder mittels `strong`, `mark` etc. hervorgehoben werden (hier wurde der falsche Fall abgeleitet)
+* kleinere Verbesserungen
+  * Berücksichtigung von Zahlwörtern und Zahlen: *von **zwei** DesignerInnen*
+  * *Ärztinnen und Ärzte* am Anfang eines Satzes wurde nicht erkannt (der Umlaut war Schuld)
 
 ## Das Add-on selber bauen / Build the add-on
 
