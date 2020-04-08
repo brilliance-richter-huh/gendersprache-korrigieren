@@ -253,6 +253,14 @@ describe('entferne Binnen-I', () => {
     });
 });
 
+describe('entfernt Partizipien', () => {
+    let beGone = new BeGone();
+    it('Besserverdienenden -> Besserverdiener', () => {
+        const result = beGone.entferneInitialForTesting("Gemeint waren dabei meist die Besserverdienenden.");
+        expect(result).to.be.equal("Gemeint waren dabei meist die Besserverdiener.");
+    });
+});
+
 describe('behandelt viele Whitespaces', () => {
     let beGone = new BeGone();
     it('Musikerinnen und Musiker -> Musiker', () => {

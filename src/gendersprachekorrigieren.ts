@@ -515,7 +515,7 @@ export class BeGone {
     }
 
     private entfernePartizip(s: string): string {
-        if (/(ier|arbeit|orsch|fahr)ende/.test(s)) {
+        if (/(ier|arbeit|orsch|fahr|verdien)ende/.test(s)) {
             s = s.replace(/der Studierende\b/g, () => {
                 this.replacementsp++;
                 return "der Student";
@@ -544,6 +544,10 @@ export class BeGone {
                 this.replacementsp++;
                 return p1 + "fahrer";
             });
+            s = s.replace(/([A-Z]+[a-zäöü]+)verdienende(r|n?)?/g, (match, p1) => {
+                this.replacementsp++;
+                return p1 + "verdiener";
+            });
         }
 
         return s;
@@ -566,7 +570,7 @@ export class BeGone {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
             }
             if (this.settings.partizip) {
-                probePartizip = /ierende|Mitarbeitende|Forschende|fahrende/.test(bodyTextContent);
+                probePartizip = /ierende|Mitarbeitende|Forschende|fahrende|verdienende/.test(bodyTextContent);
             }
         }
 
