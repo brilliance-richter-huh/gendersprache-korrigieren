@@ -1,10 +1,10 @@
 # Gendersprache korrigieren
 
-Ein Firefox-Add-on, welches Binnen-Is und Ähnliches von Webseiten entfernt. Es basiert auf dem Add-on **Binnen-I be gone**, welches ich seit langer Zeit selber einsetze und schätzen gelernt habe.
+Ein Firefox-Add-on, welches Binnen-Is und Ähnliches von Webseiten entfernt. Es basiert auf dem Add-on *Binnen-I be gone*, welches ich seit langer Zeit selber einsetze und schätzen gelernt habe.
 
 ## Sinn und Zweck des Add-ons
 
-Das Firefox-Plugin korrigiert viele durch die Gendersprache verursachten Rechtschreib- und Grammatikfehler. Typische Beispiele sind Binnen-I, Gendersterne, Unterstriche und ähnliche Konstrukte:
+Das Firefox-Add-on korrigiert viele durch die Gendersprache verursachten Rechtschreib- und Grammatikfehler. Typische Beispiele sind Binnen-I, Gendersterne, Unterstriche und ähnliche Konstrukte:
 
 Beispiele für die Korrektur (vorher -> nachher):
 
