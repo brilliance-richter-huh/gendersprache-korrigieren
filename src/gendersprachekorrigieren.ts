@@ -59,7 +59,7 @@ export class BeGone {
                                 return NodeFilter.FILTER_REJECT;
                             }
                             //Nur Nodes erfassen, deren Inhalt ungefähr zur späteren Verarbeitung passt
-                            else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß\(_\*:\.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|fahrende|ierende|Mitarbeitende|Forschende/.test(node.textContent)) {
+                            else if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]|[a-zäöüß\(_\*:\.][iI][nN]|nE\b|r[MS]\b|e[NR]\b|fahrende|ierende|Mitarbeitende|Forschende|flüch/.test(node.textContent)) {
                                 return NodeFilter.FILTER_ACCEPT;
                             }
                         }
@@ -553,17 +553,52 @@ export class BeGone {
         return s;
     }
 
+    private ersetzeGefluechteteDurchFluechtlinge(s: string): string {
+        if (/flüch/.test(s)) {
+            s = s.replace(/[\u00AD\u200B]/g, ""); //entfernt soft hyphens
+
+            // "Geflüchtete" vor einem Substantiv ignorieren - das ist ein Adjektiv
+            if (/\bGeflüchtet(e\b|er\b|en\b)[\s]{1,2}[A-Z]/g.test(s)) {
+                return s;
+            }
+
+            s = s.replace(/\b[Dd]er Geflüchtete\b/g, (match, praeposition, zahlwort, aufzaehlung, gefluechtete, endung, zufolge) => {
+                return "Der Flüchtling";                
+            });
+
+            // Annahme: Gefluechtete wird fast ausschließlich in der Mehrzahl verwendet, was die Ersetzung einfacher macht
+            // (?:[A-Z][a-zöüä]+\b[,] ) -> Behandlung von Aufzählungen der Form "gegenüber Obdachlosen, Geflüchteten und Menschen ohne Papiere"
+            s = s.replace(/\b([Aa]us[\s]{1,2}|[Aa]ußer[\s]{1,2}|[Bb]ei[\s]{1,2}|[Zz]u[\s]{1,2}|[Ee]ntgegen[\s]{1,2}|[Ee]ntsprechend[\s]{1,2}|[Gg]emäß[\s]{1,2}|[Gg]etreu[\s]{1,2}|[Gg]egenüber[\s]{1,2}|[Nn]ahe[\s]{1,2}|[Mm]it[\s]{1,2}|[Nn]ach[\s]{1,2}|[Ss]amt[\s]{1,2}|[Mm]itsamt[\s]{1,2}|[Ss]eit[\s]{1,2}|[Vv]on[\s]{1,2})?(den[\s]{1,2})?(den[\s]{1,2}|vielen[\s]{1,2}|mehreren[\s]{1,2})?([A-Z][a-zöüä]+\b[,][\s]{1,2})*([„“‟”’’❝❞❮❯⹂〝〞〟＂‚‘‛❛❜❟«‹»›]?Geflüchtet(e\b|en\b|er\b)[„“‟”’’❝❞❮❯⹂〝〞〟＂‚‘‛❛❜❟«‹»›]?)([\s]{1,2}zufolge)?\b/g, (match, praeposition, den, zahlwort, aufzaehlung, gefluechtete, endung, zufolge) => {
+                this.replacementsp++;
+                if (!praeposition) praeposition = "";
+                if (!zahlwort) zahlwort = "";
+                if (!aufzaehlung) aufzaehlung = "";
+                if (!zufolge) zufolge = "";
+                if (!den) den = "";
+
+                if (praeposition || den) {
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlingen" + zufolge;
+                } else {
+                    return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlinge" + zufolge;
+                }
+            });
+        }
+        return s;
+    }
+
     private probeDocument(bodyTextContent: string = document.body.textContent ? document.body.textContent : ""): 
     {
         probeBinnenI: boolean,
         probeRedundancy: boolean,
         probePartizip: boolean
+        probeGefluechtete: boolean;
 
     } {
         let probeBinnenI = false;
         let probeRedundancy = false;
         let probePartizip = false;
-        if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I/.test(bodyTextContent)) {
+        let probeGefluechtete = false;
+        if (!this.settings.skip_topic || this.settings.skip_topic && this.mtype || this.settings.skip_topic && !/Binnen-I|Geflüchtete/.test(bodyTextContent)) {
             probeBinnenI = /[a-zäöüß]{2}((\/-?|_|\*|:|\.| und -)?In|(\/-?|_|\*|:|\.| und -)in(n[\*|\.]en)?|INNen|\([Ii]n+(en\)|\)en)?|\/inne?)(?!(\w{1,2}\b)|[A-Z]|[cf]o|t|act|clu|dex|di|line|ner|put|sert|stall|stan|stru|val|vent|v?it|voice)|[A-ZÄÖÜß]{3}(\/-?|_|\*|:|\.)IN\b|(der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(])/.test(bodyTextContent);
 
             if (this.settings.doppelformen) {
@@ -572,12 +607,17 @@ export class BeGone {
             if (this.settings.partizip) {
                 probePartizip = /ierende|Mitarbeitende|Forschende|fahrende|verdienende/.test(bodyTextContent);
             }
+            if (this.settings.partizip) {
+                // immer "flüch" testen, "flücht" schlug wegen soft hyphens schon fehl
+                probeGefluechtete = /flüch/.test(bodyTextContent);
+            }
         }
 
         return {
             probeBinnenI: probeBinnenI,
             probeRedundancy: probeRedundancy,
-            probePartizip: probePartizip
+            probePartizip: probePartizip,
+            probeGefluechtete : probeGefluechtete
         }
     }
 
@@ -654,6 +694,10 @@ export class BeGone {
             if (probeResult.probeBinnenI) {
                 this.applyToNodes(this.nodes, this.entferneBinnenIs);
             }
+            if (probeResult.probeGefluechtete) {
+                this.applyToNodes(this.nodes, this.ersetzeGefluechteteDurchFluechtlinge);
+            }
+
             if (this.settings.counter) {
                 this.sendCounttoBackgroundScript();
             }
@@ -663,7 +707,7 @@ export class BeGone {
     public entferneInitialForTesting(s: string): string {
         const probeResult = this.probeDocument(s)
 
-        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip) {
+        if (probeResult.probeBinnenI || this.settings.doppelformen && probeResult.probeRedundancy || this.settings.partizip && probeResult.probePartizip || this.settings.partizip && probeResult.probeGefluechtete) {
             if (this.settings.doppelformen && probeResult.probeRedundancy) {
                 s = this.entferneDoppelformen(s);
             }
@@ -673,6 +717,10 @@ export class BeGone {
             if (probeResult.probeBinnenI) {
                 s = this.entferneBinnenIs(s);
             }
+            if (probeResult.probeGefluechtete) {
+                s = this.ersetzeGefluechteteDurchFluechtlinge(s);
+            }
+
             if (this.settings.counter) {
                 this.sendCounttoBackgroundScript();
             }

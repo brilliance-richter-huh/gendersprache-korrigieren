@@ -277,4 +277,70 @@ describe('behandelt viele Whitespaces', () => {
         const result = beGone.entferneInitialForTesting("Den Polizisten, die auf den Straßen für Sicherheit sorgen, den \fVerkäuferinnen und Verkäufern im Supermarkt\f, die hinter");
         expect(result).to.be.equal("Den Polizisten, die auf den Straßen für Sicherheit sorgen, den \fVerkäufern im Supermarkt\f, die hinter");
     });
+
+    it('Geflüchtete', () => {
+        const result = beGone.entferneInitialForTesting("Protest am Aktionstag für die \fGeflüchteten\f aus den griechischen Lagern ");
+        expect(result).to.be.equal("Protest am Aktionstag für die \fFlüchtlinge\f aus den griechischen Lagern ");
+    });
+});
+
+describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
+    let beGone = new BeGone();
+
+    // verschiedene Formulierungen angelehnt an aktuelle Medienberichte
+
+    it('Geflüchtete', () => {
+        const result = beGone.entferneInitialForTesting("Dem folgte am Mittwoch vor Weihnachten ein Beschluss, dass Hamburg Geflüchtete aufnehmen wolle dem Vernehmen nach 60 Kinder, außerdem sei das Land bereit, fünf Kinder aus dem nun gestarteten Bundesprogramm aufzunehmen.");
+        expect(result).to.be.equal("Dem folgte am Mittwoch vor Weihnachten ein Beschluss, dass Hamburg Flüchtlinge aufnehmen wolle dem Vernehmen nach 60 Kinder, außerdem sei das Land bereit, fünf Kinder aus dem nun gestarteten Bundesprogramm aufzunehmen.");
+    });
+
+    it('Geflüchtete, in Aufzählung', () => {
+        const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber Obdachlosen, Geflüchteten und Menschen ohne Papiere überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Obdachlosen, Flüchtlingen und Menschen ohne Papiere überdenken.");
+    });
+
+    it('Geflüchtete', () => {
+        const result = beGone.entferneInitialForTesting("Es müsse der Aufenthalt von Flüchtlingen und Leuten ohne Papiere legalisiert werden.");
+        expect(result).to.be.equal("Es müsse der Aufenthalt von Flüchtlingen und Leuten ohne Papiere legalisiert werden.");
+    });
+
+    it('Geflüchtete', () => {
+        const result = beGone.entferneInitialForTesting("Das Bündnis hatte dazu aufgerufen, mit Plakaten auf Rädern durch die Straßen zu fahren, um gegen das Elend der Geflüchteten in Lagern zu demonstrieren.");
+        expect(result).to.be.equal("Das Bündnis hatte dazu aufgerufen, mit Plakaten auf Rädern durch die Straßen zu fahren, um gegen das Elend der Flüchtlinge in Lagern zu demonstrieren.");
+    });
+
+    it('Geflüchtete', () => {
+        const result = beGone.entferneInitialForTesting("Protest am Aktionstag für die Geflüchteten aus den griechischen Lagern");
+        expect(result).to.be.equal("Protest am Aktionstag für die Flüchtlinge aus den griechischen Lagern");
+    });
+
+    it('Geflüchtete', () => {
+        const result = beGone.entferneInitialForTesting("Bei der Räumung sollen mehrere Geflüchtete versucht haben");
+        expect(result).to.be.equal("Bei der Räumung sollen mehrere Flüchtlinge versucht haben");
+    });
+
+    it('Geflüchtete (Nominativ Singular)', () => {
+        const result = beGone.entferneInitialForTesting("Der Geflüchtete muss in diesem Fall selbst die Verantwortung übernehmen.");
+        expect(result).to.be.equal("Der Flüchtling muss in diesem Fall selbst die Verantwortung übernehmen.");
+    });
+
+    it('Geflüchtete (Dativ Plural)', () => {
+        const result = beGone.entferneInitialForTesting("Das derzeitige Mühen um das Wohl Anderer endet bei den Geflüchteten in Sammelunterkünften.");
+        expect(result).to.be.equal("Das derzeitige Mühen um das Wohl Anderer endet bei den Flüchtlingen in Sammelunterkünften.");
+    });
+
+    it('Geflüchtete (Dativ Plural II)', () => {
+        const result = beGone.entferneInitialForTesting("Inwiefern beeinflusst die Sprache, wie wir den Geflüchteten begegnen?");
+        expect(result).to.be.equal("Inwiefern beeinflusst die Sprache, wie wir den Flüchtlingen begegnen?");
+    });
+
+    it('„Geflüchtete“ mit soft hyphen', () => {
+        const result = beGone.entferneInitialForTesting("Mehr und mehr Engagierte verwenden den Begriff „Geflüch­te­te“.");
+        expect(result).to.be.equal("Mehr und mehr Engagierte verwenden den Begriff „Flüchtlinge“.");
+    });
+
+    it('Geflüchtete als Adjektiv', () => {
+        const result = beGone.entferneInitialForTesting("Geflüchtete Menschen beschäftigen");
+        expect(result).to.be.equal("Geflüchtete Menschen beschäftigen");
+    });
 });
