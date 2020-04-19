@@ -270,6 +270,12 @@ describe('entfernt Partizipien', () => {
         const result = beGone.entferneInitialForTesting("Gemeint waren dabei meist die Besserverdienenden.");
         expect(result).to.be.equal("Gemeint waren dabei meist die Besserverdiener.");
     });
+
+    it('Lesenden -> Leser', () => {
+        const result = beGone.entferneInitialForTesting("ist zwar nett für die Lesenden");
+        // besser als nichts
+        expect(result).to.be.equal("ist zwar nett für die Leser");
+    });
 });
 
 describe('behandelt viele Whitespaces', () => {
@@ -364,6 +370,21 @@ describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
         const result = beGone.entferneInitialForTesting("Geflüchtete Menschen beschäftigen");
         expect(result).to.be.equal("Geflüchtete Menschen beschäftigen");
     });
+
+    it('geflüchtete Kinder', () => {
+        const result = beGone.entferneInitialForTesting("geflüchtete Kinder");
+        expect(result).to.be.equal("geflohene Kinder");
+    });
+
+    it('geflüchteten Kinder', () => {
+        const result = beGone.entferneInitialForTesting("kommenden geflüchteten Kinder aus");
+        expect(result).to.be.equal("kommenden geflohenen Kinder aus");
+    });
+
+    it('Geflüchtetenlager', () => {
+        const result = beGone.entferneInitialForTesting("Geflüchtetenlager");
+        expect(result).to.be.equal("Flüchtlingslager");
+    });
 });
 
 
@@ -398,3 +419,13 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
     });
 
 });
+
+
+/** 
+ * Sammlung:
+ * 
+ * wenn 1 sich
+ * 
+ * 
+ * 
+*/

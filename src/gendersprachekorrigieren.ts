@@ -531,7 +531,7 @@ export class BeGone {
     }
 
     private entfernePartizip(s: string): string {
-        if (/(ier|arbeit|orsch|fahr|verdien|nehm)ende|Interessierte/.test(s)) {
+        if (/(ier|arbeit|orsch|fahr|verdien|nehm|es)ende|Interessierte/.test(s)) {
             s = s.replace(/der Studierende\b/g, () => {
                 this.replacementsp++;
                 return "der Student";
@@ -547,6 +547,10 @@ export class BeGone {
             s = s.replace(/Dozierende(r|n?)?/g, () => {
                 this.replacementsp++;
                 return "Dozenten";
+            });
+            s = s.replace(/Lesende(r|n?)?/g, () => {
+                this.replacementsp++;
+                return "Leser";
             });
             s = s.replace(/Assistierende(r|n?)?/g, () => {
                 this.replacementsp++;
@@ -606,6 +610,16 @@ export class BeGone {
                     return  praeposition + den + zahlwort + aufzaehlung + "Flüchtlinge" + zufolge;
                 }
             });
+
+            // "geflüchtete xxx" -> "geflohene xxx"
+            s = s.replace(/\b(geflüchtet)(e(?:(r|n)?)?[\s]{1,2}(?:Kind|Mensch)[\w]+)\b/g, (match, gefluechtet, rest) => {
+                return "geflohen" + rest;
+            });
+
+            // "Geflüchtetenxxx" -> "Flüchtlingsxxx"
+            s = s.replace(/\b(Geflüchteten)([\w]{3,})\b/g, (match, gefluechteten, rest) => {
+                return "Flüchtlings" + rest;
+            });
         }
         return s;
     }
@@ -629,7 +643,7 @@ export class BeGone {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
             }
             if (this.settings.partizip) {
-                probePartizip = /ierende|Mitarbeitende|Forschende|fahrende|verdienende|Interessierte|Teilnehmende/.test(bodyTextContent);
+                probePartizip = /ierende|Mitarbeitende|Forschende|fahrende|verdienende|Interessierte|Teilnehmende|esende/.test(bodyTextContent);
             }
             if (this.settings.partizip) {
                 // immer "flüch" testen, "flücht" schlug wegen soft hyphens schon fehl
