@@ -168,6 +168,11 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Kaum ausgezogen, hat sie die Straßen mit Bildern von zwei MusikerInnen dekoriert.");
         expect(result).to.be.equal("Kaum ausgezogen, hat sie die Straßen mit Bildern von zwei Musikern dekoriert.");
     });
+
+    it('von Autor*innen und Freund*innen -> von Autoren und Freunden', () => {
+        const result = beGone.entferneInitialForTesting("Abseitiges, Tiefsinniges & Schönes von Autor*innen und Freund*innen der taz.");
+        expect(result).to.be.equal("Abseitiges, Tiefsinniges & Schönes von Autoren und Freunden der taz.");
+    });
  });
 
  describe('entferne Doppelformen', () => {
@@ -299,6 +304,16 @@ describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
         expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Obdachlosen, Flüchtlingen und Menschen ohne Papiere überdenken.");
     });
 
+    it('Geflüchtete, in Aufzählung mit "und"', () => {
+        const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber AutorInnen und Geflüchteten überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autoren und Flüchtlingen überdenken.");
+    });
+
+    it('Geflüchtete, in Aufzählung, mit Binnen-I-Wort', () => {
+        const result = beGone.entferneInitialForTesting("Der Senat soll sein Handeln gegenüber AutorInnen, Geflüchteten und Menschen ohne Papiere überdenken.");
+        expect(result).to.be.equal("Der Senat soll sein Handeln gegenüber Autoren, Flüchtlingen und Menschen ohne Papiere überdenken.");
+    });
+
     it('Geflüchtete', () => {
         const result = beGone.entferneInitialForTesting("Es müsse der Aufenthalt von Flüchtlingen und Leuten ohne Papiere legalisiert werden.");
         expect(result).to.be.equal("Es müsse der Aufenthalt von Flüchtlingen und Leuten ohne Papiere legalisiert werden.");
@@ -334,7 +349,7 @@ describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
         expect(result).to.be.equal("Inwiefern beeinflusst die Sprache, wie wir den Flüchtlingen begegnen?");
     });
 
-    it('„Geflüchtete“ mit soft hyphen', () => {
+    it('„Geflüchtete“ mit soft hyphen und Anführungszeichen', () => {
         const result = beGone.entferneInitialForTesting("Mehr und mehr Engagierte verwenden den Begriff „Geflüch­te­te“.");
         expect(result).to.be.equal("Mehr und mehr Engagierte verwenden den Begriff „Flüchtlinge“.");
     });
