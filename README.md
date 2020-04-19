@@ -26,7 +26,8 @@ Momentan reicht es wahrschenlich aus. Perspektivisch lässt sich das Add-on auf 
 * kleinere Verbesserungen
   * Berücksichtigung von Zahlwörtern und Zahlen: *von **zwei** DesignerInnen*
   * *Ärztinnen und Ärzte* am Anfang eines Satzes wurde nicht erkannt (der Umlaut war Schuld)
-* Neu: ersetzt "Geflüchtete" durch "Flüchtlinge" (Hinweis: die Behandlung von Verlaufsformen muss in den Optionen aktiviert werden)
+  * Berücksichtigung von Aufzählungen wie bei *von AutorInnen udn FreundInnen*
+* Neu: ersetzt die Formulierung "Geflüchtete" durch "Flüchtlinge" (Hinweis: die Behandlung von Verlaufsformen muss in den Optionen aktiviert werden)
 
 ## Das Add-on selber bauen / Build the add-on
 
