@@ -173,6 +173,12 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Abseitiges, Tiefsinniges & Schönes von Autor*innen und Freund*innen der taz.");
         expect(result).to.be.equal("Abseitiges, Tiefsinniges & Schönes von Autoren und Freunden der taz.");
     });
+
+    it('von Autor*innen und Freund*innen -> von Autoren und Freunden', () => {
+        const result = beGone.entferneInitialForTesting("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einer/m*x progressive*n*x Staatsoberhaupt.");
+        // besser als nichts
+        expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressive*n Staatsoberhaupt.");
+    });
  });
 
  describe('entferne Doppelformen', () => {
@@ -358,4 +364,37 @@ describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
         const result = beGone.entferneInitialForTesting("Geflüchtete Menschen beschäftigen");
         expect(result).to.be.equal("Geflüchtete Menschen beschäftigen");
     });
+});
+
+
+describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
+    let beGone = new BeGone();
+
+    // Quelle: https://www.uni-hamburg.de/gleichstellung/download/empfehlungen-zu-inklusiven-anredeformen-2019-05.pdf
+
+    it('Interessierte -> Interessenten', () => {
+        const result = beGone.entferneInitialForTesting("Sehr geehrte Interessierte");
+        expect(result).to.be.equal("Sehr geehrte Interessenten");
+    });
+
+    it('Studierende -> Studenden', () => {
+        const result = beGone.entferneInitialForTesting("Sehr geehrte Studierende");
+        expect(result).to.be.equal("Sehr geehrte Studenten");
+    });
+
+    it('Empfänger*innen -> Empfänger', () => {
+        const result = beGone.entferneInitialForTesting("Sehr geehrte Empfänger*innen des Newsletters XY");
+        expect(result).to.be.equal("Sehr geehrte Empfänger des Newsletters XY");
+    });
+
+    it('Mitarbeitende -> Mitarbeiter', () => {
+        const result = beGone.entferneInitialForTesting("Liebe Mitarbeitende");
+        expect(result).to.be.equal("Liebe Mitarbeiter");
+    });
+
+    it('Teilnehmende -> Teilnehmer', () => {
+        const result = beGone.entferneInitialForTesting("Sehr geehrte Teilnehmende");
+        expect(result).to.be.equal("Sehr geehrte Teilnehmer");
+    });
+
 });

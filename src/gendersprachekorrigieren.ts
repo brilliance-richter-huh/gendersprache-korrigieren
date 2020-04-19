@@ -130,6 +130,15 @@ export class BeGone {
 
     private entferneBinnenIs(s: string): string {
         this.log("10000");
+
+        // entferne *x am Ende
+        if (/\*x/.test(s)) {
+            // behandle "einer/m*x progressive*n*x"
+            s = s.replace(/([\w\/*]+)\*x\b\b/ig, (match, p1) => {
+                return p1;
+            });            
+        }
+
         if (/[a-zA-ZäöüßÄÖÜ][\/\*.&_\(]-?[a-zA-ZäöüßÄÖÜ]/.test(s) && /der|die|dessen|ein|sie|ihr|sein|zu[rm]|jede|frau|man|eR\b|em?[\/\*.&_\(]-?e?r\b|em?\(e?r\)\b/.test(s)) {
             this.log("11000");
             //Stuff
@@ -522,7 +531,7 @@ export class BeGone {
     }
 
     private entfernePartizip(s: string): string {
-        if (/(ier|arbeit|orsch|fahr|verdien)ende/.test(s)) {
+        if (/(ier|arbeit|orsch|fahr|verdien|nehm)ende|Interessierte/.test(s)) {
             s = s.replace(/der Studierende\b/g, () => {
                 this.replacementsp++;
                 return "der Student";
@@ -530,6 +539,10 @@ export class BeGone {
             s = s.replace(/Studierende(r|n?)?/g, () => {
                 this.replacementsp++;
                 return "Studenten";
+            });
+            s = s.replace(/Teilnehmende(r|n?)?/g, () => {
+                this.replacementsp++;
+                return "Teilnehmer";
             });
             s = s.replace(/Dozierende(r|n?)?/g, () => {
                 this.replacementsp++;
@@ -546,6 +559,10 @@ export class BeGone {
             s = s.replace(/Forschende(r|n?)?/g, () => {
                 this.replacementsp++;
                 return "Forscher";
+            });
+            s = s.replace(/Interessierte(r|n?)?/g, () => {
+                this.replacementsp++;
+                return "Interessenten";
             });
             s = s.replace(/([A-Z]+[a-zäöü]+)fahrende(r|n?)?/g, (match, p1) => {
                 this.replacementsp++;
@@ -612,7 +629,7 @@ export class BeGone {
                 probeRedundancy = /\b(und|oder|bzw)\b/.test(bodyTextContent);
             }
             if (this.settings.partizip) {
-                probePartizip = /ierende|Mitarbeitende|Forschende|fahrende|verdienende/.test(bodyTextContent);
+                probePartizip = /ierende|Mitarbeitende|Forschende|fahrende|verdienende|Interessierte|Teilnehmende/.test(bodyTextContent);
             }
             if (this.settings.partizip) {
                 // immer "flüch" testen, "flücht" schlug wegen soft hyphens schon fehl
