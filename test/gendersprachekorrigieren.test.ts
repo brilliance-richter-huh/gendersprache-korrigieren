@@ -79,31 +79,6 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("Anwälte");
     });
 
-    // it('den AnwältInnen -> den Anwälten', () => {
-    //     const result = beGone.entferneInitialForTesting("den AnwältInnen");
-    //     expect(result).to.be.equal("den Anwälten");
-    // });
-    
-    // it('vielen AnwältInnen -> vielen Anwälten', () => {
-    //     const result = beGone.entferneInitialForTesting("vielen AnwältInnen");
-    //     expect(result).to.be.equal("vielen Anwälten");
-    // });
-
-    // it('und dessen AnwältInnen -> und dessen Anwälten', () => {
-    //     const result = beGone.entferneInitialForTesting("und dessen AnwältInnen");
-    //     expect(result).to.be.equal("und dessen Anwälten");
-    // });
-
-    // it('und deren Musiker:innen -> und deren Musikern', () => {
-    //     const result = beGone.entferneInitialForTesting("und deren Musiker:innen");
-    //     expect(result).to.be.equal("und deren Musikern");
-    // });
-
-    // it('den BeamtInnen -> den Beamten', () => {
-    //     const result = beGone.entferneInitialForTesting("den BeamtInnen");
-    //     expect(result).to.be.equal("den Beamten");
-    // });
-
     it('WeltverbesserIn -> Weltverbesserer', () => {
         const result = beGone.entferneInitialForTesting("WeltverbesserIn");
         expect(result).to.be.equal("Weltverbesserer");
@@ -124,11 +99,6 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("den Lehrer");
     });
 
-    // geht aktuell nicht
-    // it('des/der LehrerIn -> des Lehrers', () => {
-    //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
-    //     expect(result).to.be.equal("des Lehrers");
-    // });
     it('des/der -> des', () => {
         const result = beGone.entferneInitialForTesting("des/der");
         expect(result).to.be.equal("des");
@@ -148,11 +118,6 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("einem*r Schüler*In");
         expect(result).to.be.equal("einem Schüler");
     });
-
-    // it('bekannten Musiker:innen -> bekannten Musikern', () => {
-    //     const result = beGone.entferneInitialForTesting("von einigen Dutzend mehr oder eher weniger bekannten Musiker:innen unterzeichneten Aufruf");
-    //     expect(result).to.be.equal("von einigen Dutzend mehr oder eher weniger bekannten Musikern unterzeichneten Aufruf");
-    // });
 
     it('deren Musiker:innen sangen -> deren Musiker sangen', () => {
         const result = beGone.entferneInitialForTesting("deren Musiker:innen sangen");
@@ -178,6 +143,11 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einer/m*x progressive*n*x Staatsoberhaupt.");
         // besser als nichts
         expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressive*n Staatsoberhaupt.");
+    });
+
+    it('Mehrzahl', () => {
+        const result = beGone.entferneInitialForTesting("mehr als 50 Sprecher*innen nahmen teil");
+        expect(result).to.be.equal("mehr als 50 Sprecher nahmen teil");
     });
  });
 
@@ -248,10 +218,10 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("den Verkäufern im Supermarkt, die hinter");
     });
 
-    // it('die Bürgerin und der Bürger -> der Bürger', () => {
-    //     const result = beGone.entferneInitialForTesting("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, der Bürgerin und dem Bürger, der hinter");
-    //     expect(result).to.be.equal("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, dem Bürger, der hinter");
-    // });
+    it('die Bürgerin und der Bürger -> der Bürger', () => {
+        const result = beGone.entferneInitialForTesting("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, der Bürgerin und dem Bürger, der hinter");
+        expect(result).to.be.equal("Dem Polizisten, der auf den Straßen für Sicherheit sorgt, dem Bürger, der hinter");
+    });
 
     it('Ärztinnen und Ärzte -> Ärzte', () => {
         const result = beGone.entferneInitialForTesting("Ärztinnen und Ärzte genießen in der Regel ein hohes Ansehen.");
@@ -299,6 +269,21 @@ describe('behandelt viele Whitespaces', () => {
         const result = beGone.entferneInitialForTesting("Protest am Aktionstag für die \fGeflüchteten\f aus den griechischen Lagern ");
         expect(result).to.be.equal("Protest am Aktionstag für die \fFlüchtlinge\f aus den griechischen Lagern ");
     });
+
+    it('behält Zeilenumbrüche', () => {
+        const result = beGone.entferneInitialForTesting(
+        `
+            abc\r
+        def\r\n gih\n ;
+        `);
+        expect(result).to.be.equal(
+            `
+            abc\r
+        def\r\n gih\n ;
+        `);
+    });
+
+
 });
 
 describe('ersetzt den Begriff Geflüchtete zu Flüchtlinge', () => {
@@ -420,6 +405,25 @@ describe('Empfehlungen Uni Hamburg werden korrigiert', () => {
 
 });
 
+
+describe('TODO oder nicht ohne weiteres lösbar', () => {
+    let beGone = new BeGone();
+
+    // it('Mehrzahl', () => {
+    //     const result = beGone.entferneInitialForTesting("mit mehr als 50 Sprecher*innen");
+    //     expect(result).to.be.equal("mit mehr als 50 Sprechern");
+    // });
+
+    // it('bekannten Musiker:innen -> bekannten Musikern', () => {
+    //     const result = beGone.entferneInitialForTesting("von einigen Dutzend mehr oder eher weniger bekannten Musiker:innen unterzeichneten Aufruf");
+    //     expect(result).to.be.equal("von einigen Dutzend mehr oder eher weniger bekannten Musikern unterzeichneten Aufruf");
+    // });
+
+    // it('des/der LehrerIn -> des Lehrers', () => {
+    //     const result = beGone.entferneInitialForTesting("des/der LehrerIn");
+    //     expect(result).to.be.equal("des Lehrers");
+    // });
+});
 
 /** 
  * Sammlung:
