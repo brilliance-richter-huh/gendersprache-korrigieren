@@ -680,6 +680,7 @@ export class BeGone {
         || nodeName === "a";
     }
 
+    // unfortunately this lead to newlines being removed in tweets on Twitter etc.; TODO: once FireFox supports the dotAll operator we should use this in the regexes instead, or modify the regexes to handle newlines as whitespace
     private replaceLineBreak(s: string) {
         return s.replace(/(\n|\r|\r\n)/ig, " ");
     }
@@ -696,7 +697,7 @@ export class BeGone {
             if (this.isHTMLFormattingNodeName(parentNodeName)) {
                 // this word needs to be replaced in context
                 var oldTextInContext = (i > 0 ? textnodes[i-1].data : "") + "\f" + oldText + "\f" + (i < textnodes.length - 1 ? textnodes[i+1].data : "");
-                oldTextInContext = this.replaceLineBreak(oldTextInContext);
+                //oldTextInContext = this.replaceLineBreak(oldTextInContext);
                 oldTextInContext = modifyData.call(this, oldTextInContext);
                 var index1 = oldTextInContext.indexOf("\f");
                 var index2 = oldTextInContext.indexOf("\f", index1 + 1);
@@ -705,11 +706,11 @@ export class BeGone {
                 {
                     newText = oldTextInContext.substring(index1 + 1, index2);
                 } else {
-                    oldText = this.replaceLineBreak(oldText);
+                    //oldText = this.replaceLineBreak(oldText);
                     newText = modifyData.call(this, oldText);
                 }
             } else {
-                oldText = this.replaceLineBreak(oldText);
+                //oldText = this.replaceLineBreak(oldText);
                 newText = modifyData.call(this, oldText);
             }
 
