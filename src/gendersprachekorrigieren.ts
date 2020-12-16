@@ -268,17 +268,21 @@ export class BeGone {
             }
 
             //extra Stuff				
-            if (/eR\b|em?[\/\*_\(-]{1,2}e?r\b|em?\(e?r\)\b/.test(s)) {
+            if (/eR\b|e[rm]?[\/\*_\(-]{1,2}e?[rnm]\b|em?\(e?r\)\b/.test(s)) {
                 this.log("11200");
 
                 s = s.replace(/e[\/\*_\(-]+r|e\(r\)|eR\b/g, () => {
                     this.replacementsb++;
                     return "er";
                 }); //jede/r,jede(r),jedeR,
-                s = s.replace(/em\(e?r\)|em[\/\*_\(-]+r\b/g, () => {
+                s = s.replace(/em\(e?r\)|em[\/\*_\(-]+r\b|er[\/\*_\(-]+m/g, () => {
                     this.replacementsb++;
                     return "em";
-                }); //jedem/r
+                }); //jedem/r, jeder/m
+                s = s.replace(/e[\/\*_\(-]+n\b/g, () => {
+                    this.replacementsb++;
+                    return "en";
+                }); //jede/n
                 s = s.replace(/er\(e?s\)|es[\/\*_\(-]+r\b/g, () => {
                     this.replacementsb++;
                     return "es";
