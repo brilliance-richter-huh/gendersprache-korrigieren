@@ -159,6 +159,11 @@ describe('entferne Binnen-I', () => {
         const result = beGone.entferneInitialForTesting("mehr als 50 Sprecher*innen nahmen teil");
         expect(result).to.be.equal("mehr als 50 Sprecher nahmen teil");
     });
+
+    it('jede*n -> jeden', () => {
+        const result = beGone.entferneInitialForTesting("Es war für jede*n von uns ein schweres Jahr.");
+        expect(result).to.be.equal("Es war für jeden von uns ein schweres Jahr.");
+    });
  });
 
  describe('entferne Doppelformen', () => {
@@ -241,6 +246,11 @@ describe('entferne Binnen-I', () => {
     it('Den Ärztinnen und Ärzte -> Den Ärzten', () => {
         const result = beGone.entferneInitialForTesting("Den Ärztinnen und Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
         expect(result).to.be.equal("Den Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
+    });
+
+    it('Förderinnen und Förderer -> Förderer', () => {
+        const result = beGone.entferneInitialForTesting("Vielen Dank an alle Förderinnen und Förderer.");
+        expect(result).to.be.equal("Vielen Dank an alle Förderer.");
     });
 });
 
