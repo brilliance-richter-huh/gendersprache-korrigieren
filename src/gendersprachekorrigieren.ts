@@ -319,7 +319,7 @@ export class BeGone {
             if (/[a-zäöüß]Innen/i.test(s)) {
                 this.log("12200");
                 //Prüfung auf Sonderfälle
-                if (/(chef|fan|gött|verbesser|äur|äs)innen/i.test(s)) {
+                if (/(chef|fan|gött|verbesser|förder|äur|äs)innen/i.test(s)) {
                     s = s.replace(/(C|c)hefInnen/g, (match, p1) => {
                         this.log("12201");
                         this.replacementsb++;
@@ -330,7 +330,7 @@ export class BeGone {
                         this.replacementsb++;
                         return p1 + "ans";
                     });
-                    s = s.replace(/([Gg]ött|verbesser)(?=Innen)/g, (match, p1) => {
+                    s = s.replace(/([Gg]ött|[Vv]erbesser|[Ff]örder)(?=Innen)/g, (match, p1) => {
                         this.log("12203");
                         this.replacementsb++;
                         return p1 + "er";

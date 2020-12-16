@@ -84,6 +84,16 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("Weltverbesserer");
     });
 
+    it('Verbesser*innen -> Verbesserer', () => {
+        const result = beGone.entferneInitialForTesting("Verbesser*innen");
+        expect(result).to.be.equal("Verbesserer");
+    });
+
+    it('FörderInnen -> Förderer', () => {
+        const result = beGone.entferneInitialForTesting("FörderInnen");
+        expect(result).to.be.equal("Förderer");
+    });
+
     it('JournalistInfrage -> Journalistenfrage', () => {
         const result = beGone.entferneInitialForTesting("JournalistInfrage");
         expect(result).to.be.equal("Journalistenfrage");
