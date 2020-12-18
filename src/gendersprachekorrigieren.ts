@@ -268,17 +268,21 @@ export class BeGone {
             }
 
             //extra Stuff				
-            if (/eR\b|em?[\/\*_\(-]{1,2}e?r\b|em?\(e?r\)\b/.test(s)) {
+            if (/eR\b|e[rm]?[\/\*_\(-]{1,2}e?[rnm]\b|em?\(e?r\)\b/.test(s)) {
                 this.log("11200");
 
                 s = s.replace(/e[\/\*_\(-]+r|e\(r\)|eR\b/g, () => {
                     this.replacementsb++;
                     return "er";
                 }); //jede/r,jede(r),jedeR,
-                s = s.replace(/em\(e?r\)|em[\/\*_\(-]+r\b/g, () => {
+                s = s.replace(/em\(e?r\)|em[\/\*_\(-]+r\b|er[\/\*_\(-]+m/g, () => {
                     this.replacementsb++;
                     return "em";
-                }); //jedem/r
+                }); //jedem/r, jeder/m
+                s = s.replace(/e[\/\*_\(-]+n\b/g, () => {
+                    this.replacementsb++;
+                    return "en";
+                }); //jede/n
                 s = s.replace(/er\(e?s\)|es[\/\*_\(-]+r\b/g, () => {
                     this.replacementsb++;
                     return "es";
@@ -319,7 +323,7 @@ export class BeGone {
             if (/[a-zäöüß]Innen/i.test(s)) {
                 this.log("12200");
                 //Prüfung auf Sonderfälle
-                if (/(chef|fan|gött|verbesser|äur|äs)innen/i.test(s)) {
+                if (/(chef|fan|gött|verbesser|förder|äur|äs)innen/i.test(s)) {
                     s = s.replace(/(C|c)hefInnen/g, (match, p1) => {
                         this.log("12201");
                         this.replacementsb++;
@@ -330,7 +334,7 @@ export class BeGone {
                         this.replacementsb++;
                         return p1 + "ans";
                     });
-                    s = s.replace(/([Gg]ött|verbesser)(?=Innen)/g, (match, p1) => {
+                    s = s.replace(/([Gg]ött|[Vv]erbesser|[Ff]örder)(?=Innen)/g, (match, p1) => {
                         this.log("12203");
                         this.replacementsb++;
                         return p1 + "er";
@@ -458,16 +462,12 @@ export class BeGone {
         if (/\b(und|oder|bzw)|[a-zA-ZäöüßÄÖÜ][\/\*&_\(][a-zA-ZäöüßÄÖÜ]/.test(s)) {
             this.log("21000");
             // Hinweis: \b am Anfang ersetzt durch (?=\b|[ÄäÖöÜö]), weil \b die Umlaute nicht matcht, bspw. "Ärztinnen und Ärzte" _am Anfang eines Satzes_ würden nicht ersetzt (in der Mitte aber kein Problem)
-            s = s.replace(/(?=\b|[ÄäÖöÜö])((von[\s]{1,2}|für[\s]{1,2}|mit[\s]{1,2})?((d|jed|ein|ihr|zum|sein)(e[rn]?|ie)[\s]{1,2})?([a-zäöüß]{4,20} )?)([a-zäöüß]{2,})innen( und | oder | & | bzw\.? |[\/\*_\(-])\2?((d|jed|ein|ihr|zum|sein)(e[rmns]?|ie)[\s]{1,2})?\6?(\7(e?n?))\b([\f]?)/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14) => {
+            s = s.replace(/(?=\b|[ÄäÖöÜö])((von[\s]{1,2}|für[\s]{1,2}|mit[\s]{1,2})?((d|jed|ein|ihr|zum|sein)(e[rn]?|ie)[\s]{1,2})?([a-zäöüß]{4,20} )?)([a-zäöüß]{2,})innen( und | oder | & | bzw\.? |[\/\*_\(-])\2?((d|jed|ein|ihr|zum|sein)(e[rmns]?|ie)[\s]{1,2})?\6?(\7(e?n?))(er)?\b([\f]?)/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15) => {
                     this.replacementsd++;
-                // Hinweis: p14 ist das /f-Zeichen, das u.U. verwendet wird, die zu ersetzende Wortgruppe zu umschließen
-                if (p1) {
-                    this.log("21001");
-                    return p1 + p12 + (p14 ? p14 : "");
-                } else {
-                    this.log("21002");
-                    return p12 + (p14 ? p14 : "");
-                }
+                // Hinweis: p15 ist das /f-Zeichen, das u.U. verwendet wird, die zu ersetzende Wortgruppe zu umschließen
+                // p14 ist ein optionales "er", bei Wörtern deren maskuline Form auf "erer" endet (z.B. "Förderinnen und Förderer")
+                this.log("21001");
+                return (p1 ? p1 : "") + p12 + (p14 ? p14 : "") + (p15 ? p15 : "");
             }); //Bürgerinnen und Bürger
             s = s.replace(/\b(von |für |mit |als )?(((zu )?d|jed|ein|ihr|zur|sein)(e|er|ie) )?(([a-zäöüß]{4,20}[enr]) )?([a-zäöüß]{2,})(en?|in)( und | oder | & | bzw\.? |[\/\*_\(-])(\1|vom )?((((zu )?d|jed|ein|ihr|zum|sein)(e[nrms])? )?(\7[nrms]? )?(\8(e?(s|n|r)?)))\b/ig, (match, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14, p15, p16, p17, p18) => {
                 this.replacementsd++;
