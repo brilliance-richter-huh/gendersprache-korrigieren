@@ -152,7 +152,7 @@ describe('entferne Binnen-I', () => {
     it('von Autor*innen und Freund*innen -> von Autoren und Freunden', () => {
         const result = beGone.entferneInitialForTesting("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einer/m*x progressive*n*x Staatsoberhaupt.");
         // besser als nichts
-        expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressive*n Staatsoberhaupt.");
+        expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressiven Staatsoberhaupt.");
     });
 
     it('Mehrzahl', () => {
