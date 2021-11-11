@@ -84,6 +84,16 @@ describe('entferne Binnen-I', () => {
         expect(result).to.be.equal("Weltverbesserer");
     });
 
+    it('Verbesser*innen -> Verbesserer', () => {
+        const result = beGone.entferneInitialForTesting("Verbesser*innen");
+        expect(result).to.be.equal("Verbesserer");
+    });
+
+    it('FörderInnen -> Förderer', () => {
+        const result = beGone.entferneInitialForTesting("FörderInnen");
+        expect(result).to.be.equal("Förderer");
+    });
+
     it('JournalistInfrage -> Journalistenfrage', () => {
         const result = beGone.entferneInitialForTesting("JournalistInfrage");
         expect(result).to.be.equal("Journalistenfrage");
@@ -142,12 +152,17 @@ describe('entferne Binnen-I', () => {
     it('von Autor*innen und Freund*innen -> von Autoren und Freunden', () => {
         const result = beGone.entferneInitialForTesting("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einer/m*x progressive*n*x Staatsoberhaupt.");
         // besser als nichts
-        expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressive*n Staatsoberhaupt.");
+        expect(result).to.be.equal("Wenn Friedrich Merz Bundeskanzler wird, dann wandere ich aus in ein Land mit einem progressiven Staatsoberhaupt.");
     });
 
     it('Mehrzahl', () => {
         const result = beGone.entferneInitialForTesting("mehr als 50 Sprecher*innen nahmen teil");
         expect(result).to.be.equal("mehr als 50 Sprecher nahmen teil");
+    });
+
+    it('jede*n -> jeden', () => {
+        const result = beGone.entferneInitialForTesting("Es war für jede*n von uns ein schweres Jahr.");
+        expect(result).to.be.equal("Es war für jeden von uns ein schweres Jahr.");
     });
  });
 
@@ -231,6 +246,11 @@ describe('entferne Binnen-I', () => {
     it('Den Ärztinnen und Ärzte -> Den Ärzten', () => {
         const result = beGone.entferneInitialForTesting("Den Ärztinnen und Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
         expect(result).to.be.equal("Den Ärzten, die Tag und Nacht bereitstehen, um Leben zu retten.");
+    });
+
+    it('Förderinnen und Förderer -> Förderer', () => {
+        const result = beGone.entferneInitialForTesting("Vielen Dank an alle Förderinnen und Förderer.");
+        expect(result).to.be.equal("Vielen Dank an alle Förderer.");
     });
 });
 
